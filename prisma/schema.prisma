@@ -27,5 +27,5 @@ model Task {
   content  String
   author   User    @relation(fields: [authorId], references: [id])
   authorId String
-  status   Boolean
+  status   Boolean @default(false)
 }

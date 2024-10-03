@@ -46,22 +46,28 @@ export class AuthService {
   }
 
   async login(userDTO: userLoginDTO) {
-    const userExist = await this.prisma.user.findUnique({
-      where: {
-        email: userDTO.email,
-      },
-    });
-    if (!userExist) throw new NotFoundException('User not found');
+    try {
+      const userExist = await this.prisma.user.findUnique({
+        where: {
+          email: userDTO.email,
+        },
+      });
+      if (!userExist) throw new NotFoundException('User not found');
 
-    const passwordMatch = await argon2.verify(
-      userExist.password,
-      userDTO.password,
-    );
-    if (!passwordMatch)
-      throw new ForbiddenException('Password Incorrect, try again.');
-    const payload = { email: userExist.email, sub: userExist.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+      const passwordMatch = await argon2.verify(
+        userExist.password,
+        userDTO.password,
+      );
+      if (!passwordMatch)
+        throw new ForbiddenException('Password Incorrect, try again.');
+      const payload = { email: userExist.email, sub: userExist.id };
+      return {
+        access_token: this.jwtService.sign(payload),
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Something happened check back again',
+      );
+    }
   }
 }
