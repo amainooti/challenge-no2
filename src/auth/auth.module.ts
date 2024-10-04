@@ -13,16 +13,7 @@ import { TaskModule } from '../task/task.module';
     TaskModule,
     ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('SECRET') ?? 'secret',
-        signOptions: {
-          expiresIn: '1h',
-        },
-      }),
-    }),
+    JwtModule.register({}),
   ],
   controllers: [AuthController],
   providers: [AuthService, PrismaService, JwtStrategy],

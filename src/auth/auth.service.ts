@@ -9,13 +9,40 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as argon2 from 'argon2';
 import { Prisma } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     readonly jwtService: JwtService,
+    readonly config: ConfigService,
   ) {}
+
+  async getTokens(userId: number, email: string) {
+    const [at, rt] = await Promise.all([
+      await this.jwtService.signAsync(
+        {
+          sub: userId,
+          email,
+        },
+        {
+          secret: this.config.get('AT_SECRET'),
+          expiresIn: 60 * 15,
+        },
+      ),
+      await this.jwtService.signAsync(
+        {
+          sub: userId,
+          email,
+        },
+        {
+          secret: this.config.get('RT_SECRET'),
+          expiresIn: 60 * 60 * 24 * 7,
+        },
+      ),
+    ]);
+  }
 
   async register(userDTO: UserDTO) {
     // hash password
