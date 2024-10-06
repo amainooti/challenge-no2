@@ -14,12 +14,14 @@ export class TaskController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post()
-  create(@Body() createTaskDTO: CreateTaskDTO, @Req() req) {
-    const userId = req.user?.userId;
-    console.log('Create Task DTO:', createTaskDTO);
-
+  @Post('create')
+  create(@Body() createTaskDTO: CreateTaskDTO, @Req() req: Request) {
+    const userId = req.user;
     console.log(userId);
-    this.taskService.create({ ...createTaskDTO, authorId: userId });
+    console.log('Create Task DTO:', createTaskDTO);
+    return this.taskService.create({
+      ...createTaskDTO,
+      authorId: userId['userId'],
+    });
   }
 }

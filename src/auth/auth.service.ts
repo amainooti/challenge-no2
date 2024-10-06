@@ -19,31 +19,6 @@ export class AuthService {
     readonly config: ConfigService,
   ) {}
 
-  async getTokens(userId: number, email: string) {
-    const [at, rt] = await Promise.all([
-      await this.jwtService.signAsync(
-        {
-          sub: userId,
-          email,
-        },
-        {
-          secret: this.config.get('AT_SECRET'),
-          expiresIn: 60 * 15,
-        },
-      ),
-      await this.jwtService.signAsync(
-        {
-          sub: userId,
-          email,
-        },
-        {
-          secret: this.config.get('RT_SECRET'),
-          expiresIn: 60 * 60 * 24 * 7,
-        },
-      ),
-    ]);
-  }
-
   async register(userDTO: UserDTO) {
     // hash password
     const hash = await argon2.hash(userDTO.password);

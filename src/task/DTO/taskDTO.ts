@@ -10,8 +10,7 @@ export class CreateTaskDTO {
   @IsNotEmpty()
   content: string;
 
-  status: boolean;
+  status?: boolean;
 
-  @IsString()
-  authorId: string;
+  authorId: number;
 }

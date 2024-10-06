@@ -7,7 +7,7 @@ export class TaskService {
   constructor(readonly prisma: PrismaService) {}
   async getAll() {
     try {
-      const tasks = this.prisma.task.findMany({});
+      const tasks = await this.prisma.task.findMany({});
       if (!tasks) throw new Error('No Tasks found, try creating a task');
     } catch (error) {
       throw new InternalServerErrorException(
@@ -16,7 +16,7 @@ export class TaskService {
     }
   }
 
-  async create(createTaskDTO: CreateTaskDTO & { authorId: string }) {
+  async create(createTaskDTO: CreateTaskDTO & { authorId: number }) {
     try {
       const task = await this.prisma.task.create({
         data: {
@@ -30,6 +30,8 @@ export class TaskService {
       });
       return { message: 'Task created Succesfully', payload: task };
     } catch (error) {
+      console.error('Error creating task:', error); // Log the error
+
       throw new InternalServerErrorException(
         'Something happened try again later.',
       );
