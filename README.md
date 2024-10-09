@@ -86,3 +86,8 @@ POST /task/create
 ```
 
 ![Todo Block Diagram](./todo.png)
+
+## Credits
+
+This project idea is taken from [roadmap.sh](https://roadmap.sh/projects/todo-list-api).
+
